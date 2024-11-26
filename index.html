@@ -4,81 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Школьное расписание</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .class-button {
-            margin: 5px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Школьное расписание</h1>
+    <header>
+        <h1>Школьное расписание</h1>
+        <a href="form.html" class="form-button">Заполнить расписание</a>
+    </header>
 
-    <div>
-        <button class="class-button" onclick="showSchedule('5а')">5а</button>
-        <button class="class-button" onclick="showSchedule('5б')">5б</button>
-        <button class="class-button" onclick="showSchedule('5в')">5в</button>
-        <button class="class-button" onclick="showSchedule('5г')">5г</button>
-        <button class="class-button" onclick="showSchedule('6а')">6а</button>
-        <button class="class-button" onclick="showSchedule('6б')">6б</button>
-        <button class="class-button" onclick="showSchedule('6в')">6в</button>
-        <button class="class-button" onclick="showSchedule('6г')">6г</button>
-        <button class="class-button" onclick="showSchedule('7а')">7а</button>
-        <button class="class-button" onclick="showSchedule('7б')">7б</button>
-        <button class="class-button" onclick="showSchedule('7в')">7в</button>
-        <button class="class-button" onclick="showSchedule('7г')">7г</button>
-        <button class="class-button" onclick="showSchedule('8а')">8а</button>
-        <button class="class-button" onclick="showSchedule('8б')">8б</button>
-        <button class="class-button" onclick="showSchedule('8в')">8в</button>
-        <button class="class-button" onclick="showSchedule('9а')">9а</button>
-        <button class="class-button" onclick="showSchedule('9б')">9б</button>
-        <button class="class-button" onclick="showSchedule('9в')">9в</button>
-        <button class="class-button" onclick="showSchedule('9г')">9г</button>
-        <button class="class-button" onclick="showSchedule('9д')">9д</button>
-        <button class="class-button" onclick="showSchedule('10ен')">10ен</button>
-        <button class="class-button" onclick="showSchedule('10тех')">10тех</button>
-        <button class="class-button" onclick="showSchedule('10б')">10б</button>
-        <button class="class-button" onclick="showSchedule('11ен')">11ен</button>
-        <button class="class-button" onclick="showSchedule('11тех')">11тех</button>
-        <button class="class-button" onclick="showSchedule('11б')">11б</button>
-    </div>
+    <main>
+        <div class="class-buttons">
+            <button class="class-button" onclick="showSchedule('5а')">5а</button>
+            <button class="class-button" onclick="showSchedule('5б')">5б</button>
+            <button class="class-button" onclick="showSchedule('5в')">5в</button>
+            <button class="class-button" onclick="showSchedule('5г')">5г</button>
+            <button class="class-button" onclick="showSchedule('6а')">6а</button>
+            <button class="class-button" onclick="showSchedule('6б')">6б</button>
+            <button class="class-button" onclick="showSchedule('6в')">6в</button>
+            <button class="class-button" onclick="showSchedule('6г')">6г</button>
+            <button class="class-button" onclick="showSchedule('7а')">7а</button>
+            <button class="class-button" onclick="showSchedule('7б')">7б</button>
+            <button class="class-button" onclick="showSchedule('7в')">7в</button>
+            <button class="class-button" onclick="showSchedule('7г')">7г</button>
+            <button class="class-button" onclick="showSchedule('8а')">8а</button>
+            <button class="class-button" onclick="showSchedule('8б')">8б</button>
+            <button class="class-button" onclick="showSchedule('8в')">8в</button>
+            <button class="class-button" onclick="showSchedule('9а')">9а</button>
+            <button class="class-button" onclick="showSchedule('9б')">9б</button>
+            <button class="class-button" onclick="showSchedule('9в')">9в</button>
+            <button class="class-button" onclick="showSchedule('9г')">9г</button>
+            <button class="class-button" onclick="showSchedule('9д')">9д</button>
+            <button class="class-button" onclick="showSchedule('10ен')">10ен</button>
+            <button class="class-button" onclick="showSchedule('10тех')">10тех</button>
+            <button class="class-button" onclick="showSchedule('10б')">10б</button>
+            <button class="class-button" onclick="showSchedule('11ен')">11ен</button>
+            <button class="class-button" onclick="showSchedule('11тех')">11тех</button>
+            <button class="class-button" onclick="showSchedule('11б')">11б</button>
+        </div>
+    </main>
 
     <div id="myModal" class="modal">
         <div class="modal-content">
@@ -89,15 +52,12 @@
 
     <script>
         const schedules = {
-            '5а': `Понедельник: Математика (8:00 - 9:30), Русский язык (9:40 - 11:10)`,
-            '5б': `Понедельник: Английский язык (10:00 - 11:30), Физика (12:00 - 13:30)`,
-            '5в': `Вторник: Химия (8:00 - 9:30), Литература (9:40 - 11:10)`,
-            '5г': `Среда: Биология (10:00 - 11:30), География (12:00 - 13:30)`,
-            // Добавь расписания для других классов
-            '6а': `Понедельник: История (8:00 - 9:30), Физика (9:40 - 11:10)`,
-            '6б': `Вторник: География (10:00 - 11:30), Химия (12:00 - 13:30)`,
-            '7а': `Среда: Математика (10:00 - 11:30), Русский язык (12:00 - 13:30)`,
-            // И так далее...
+            '5а': 'Расписание для 5а',
+            '5б': 'Расписание для 5б',
+            '5в': 'Расписание для 5в',
+            '5г': 'Расписание для 5г',
+            '6а': 'Расписание для 6а',
+            // Добавить расписания для остальных классов
         };
 
         function showSchedule(className) {
@@ -117,4 +77,3 @@
     </script>
 </body>
 </html>
-
