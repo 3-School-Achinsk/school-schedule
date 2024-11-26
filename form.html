@@ -72,12 +72,24 @@
             }
         });
 
-        document.getElementById('scheduleForm').addEventListener('submit', function(event) {
+        document.getElementById('scheduleForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-
             const className = document.getElementById('className').value;
             const schedule = document.getElementById('schedule').value;
-            localStorage.setItem(className, schedule);
+
+            // Обновление расписания в JSON-файле
+            const response = await fetch('schedules.json');
+            const data = await response.json();
+            data[className] = schedule;
+
+            // Сохранение нового расписания
+            await fetch('save_schedule.php', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
             alert('Расписание для ' + className + ' сохранено!');
             document.getElementById('scheduleForm').reset();
