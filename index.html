@@ -51,17 +51,9 @@
     </div>
 
     <script>
-        const schedules = {
-            '5а': 'Расписание для 5а',
-            '5б': 'Расписание для 5б',
-            '5в': 'Расписание для 5в',
-            '5г': 'Расписание для 5г',
-            '6а': 'Расписание для 6а',
-            // Добавить расписания для остальных классов
-        };
-
         function showSchedule(className) {
-            document.getElementById('scheduleContent').innerText = schedules[className] || 'Расписание не найдено.';
+            const schedule = localStorage.getItem(className);
+            document.getElementById('scheduleContent').innerText = schedule ? schedule : 'Расписание не найдено.';
             document.getElementById('myModal').style.display = "block";
         }
 
