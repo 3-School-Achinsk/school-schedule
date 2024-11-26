@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавить расписание</title>
+</head>
+
+<body>
+    <h1>Добавить расписание</h1>
+    <form id="scheduleForm">
+        <label for="className">Класс:</label>
+        <input type="text" id="className" required><br><br>
+
+        <label for="scheduleDetails">Расписание:</label><br>
+        <textarea id="scheduleDetails" rows="4" cols="50" required></textarea><br><br>
+
+        <button type="submit">Сохранить расписание</button>
+    </form>
+
+    <script>
+        document.getElementById('scheduleForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const className = document.getElementById('className').value;
+            const scheduleDetails = document.getElementById('scheduleDetails').value;
+
+            // Сохранить расписание в localStorage
+            const schedules = JSON.parse(localStorage.getItem('schedules')) || {};
+            schedules[className] = scheduleDetails;
+            localStorage.setItem('schedules', JSON.stringify(schedules));
+
+            alert('Расписание успешно сохранено!');
+            document.getElementById('scheduleForm').reset();
+        });
+    </script>
+</body>
+
+</html>
