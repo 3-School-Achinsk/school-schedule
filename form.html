@@ -13,13 +13,7 @@
     </header>
 
     <main>
-        <form id="loginForm">
-            <label for="password">Пароль:</label>
-            <input type="password" id="password" required>
-            <button type="submit">Войти</button>
-        </form>
-
-        <form id="scheduleForm" style="display: none;">
+        <form id="scheduleForm">
             <label for="className">Выберите класс:</label>
             <select id="className" name="className">
                 <option value="5а">5а</option>
@@ -58,37 +52,35 @@
     </main>
 
     <script>
-        const correctPassword = 'Scholl_3_Achinsk';
-
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const password = document.getElementById('password').value;
-
-            if (password === correctPassword) {
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('scheduleForm').style.display = 'block';
-            } else {
-                alert('Неверный пароль!');
-            }
-        });
+        const scheduleUrl = 'https://gist.githubusercontent.com/3-School-Achinsk/36725d7bbd465aaeecb11ae5ec590f14/raw/a3f3c4f7c08c508c017583747280258ef2401dc3/schedules.json'; // Замените на ваш Raw URL
 
         document.getElementById('scheduleForm').addEventListener('submit', async function(event) {
             event.preventDefault();
+
             const className = document.getElementById('className').value;
             const schedule = document.getElementById('schedule').value;
 
-            // Обновление расписания в JSON-файле
-            const response = await fetch('schedules.json');
+            // Получение текущих данных
+            const response = await fetch(scheduleUrl);
             const data = await response.json();
+
+            // Обновление данных
             data[className] = schedule;
 
-            // Сохранение нового расписания
-            await fetch('save_schedule.php', {
-                method: 'POST',
-                body: JSON.stringify(data),
+            // Сохранение обновлённого расписания
+            await fetch('https://api.github.com/gists/36725d7bbd465aaeecb11ae5ec590f14', { // Замените на ID вашего Gist
+                method: 'PATCH',
                 headers: {
+                    'Authorization': 'token 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', // С вашим токеном доступа
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({
+                    files: {
+                        'schedules.json': {
+                            content: JSON.stringify(data, null, 2)
+                        }
+                    }
+                })
             });
 
             alert('Расписание для ' + className + ' сохранено!');
