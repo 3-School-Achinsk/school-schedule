@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заполнение расписания</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Заполнение расписания</h1>
+        <a href="index.html" class="form-button">На главную</a>
+    </header>
+
+    <main>
+        <form id="scheduleForm">
+            <label for="className">Выберите класс:</label>
+            <select id="className" name="className">
+                <option value="5а">5а</option>
+                <option value="5б">5б</option>
+                <option value="5в">5в</option>
+                <option value="5г">5г</option>
+                <option value="6а">6а</option>
+                <option value="6б">6б</option>
+                <option value="6в">6в</option>
+                <option value="6г">6г</option>
+                <option value="7а">7а</option>
+                <option value="7б">7б</option>
+                <option value="7в">7в</option>
+                <option value="7г">7г</option>
+                <option value="8а">8а</option>
+                <option value="8б">8б</option>
+                <option value="8в">8в</option>
+                <option value="9а">9а</option>
+                <option value="9б">9б</option>
+                <option value="9в">9в</option>
+                <option value="9г">9г</option>
+                <option value="9д">9д</option>
+                <option value="10ен">10ен</option>
+                <option value="10тех">10тех</option>
+                <option value="10б">10б</option>
+                <option value="11ен">11ен</option>
+                <option value="11тех">11тех</option>
+                <option value="11б">11б</option>
+            </select>
+
+            <label for="schedule">Введите расписание:</label>
+            <textarea id="schedule" name="schedule" rows="10" required></textarea>
+
+            <button type="submit">Сохранить расписание</button>
+        </form>
+    </main>
+
+    <script>
+        document.getElementById('scheduleForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Отменяем стандартное поведение формы
+
+            const className = document.getElementById('className').value;
+            const schedule = document.getElementById('schedule').value;
+            localStorage.setItem(className, schedule); // Сохраняем расписание в localStorage
+
+            alert('Расписание для ' + className + ' сохранено!');
+            document.getElementById('scheduleForm').reset(); // Очищаем форму
+        });
+    </script>
+</body>
+</html>
