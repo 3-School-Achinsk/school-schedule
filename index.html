@@ -4,12 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Школьное расписание</title>
+    <meta name="description" content="Просмотр школьного расписания для классов.">
+    <meta name="keywords" content="расписание, школа, классы, 5а, 6б, 7в">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <h1>Школьное расписание</h1>
-        <a href="form.html" class="form-button">Заполнить расписание</a>
     </header>
 
     <main>
@@ -41,19 +42,20 @@
             <button class="class-button" onclick="showSchedule('11тех')">11тех</button>
             <button class="class-button" onclick="showSchedule('11б')">11б</button>
         </div>
+
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div id="scheduleContent"></div>
+            </div>
+        </div>
+        
+        <a href="form.html" class="form-button">Заполнить расписание</a>
     </main>
 
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <div id="scheduleContent"></div>
-        </div>
-    </div>
-
     <script>
-        const scheduleUrl = 'https://gist.githubusercontent.com/3-School-Achinsk/36725d7bbd465aaeecb11ae5ec590f14/raw/a3f3c4f7c08c508c017583747280258ef2401dc3/schedules.json'; // Замените на ваш Raw URL
+        const scheduleUrl = 'https://gist.githubusercontent.com/3-School-Achinsk/36725d7bbd465aaeecb11ae5ec590f14/raw/a3f3c4f7c08c508c017583747280258ef2401dc3/schedules.json'; // Ваш Raw URL
 
-        // Функция для загрузки расписания из JSON
         async function loadSchedules() {
             const response = await fetch(scheduleUrl);
             return await response.json();
@@ -61,7 +63,6 @@
 
         let schedules = {};
 
-        // Загружаем расписания при инициализации
         loadSchedules().then(data => {
             schedules = data;
         });
