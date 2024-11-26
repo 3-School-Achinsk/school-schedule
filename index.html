@@ -51,9 +51,24 @@
     </div>
 
     <script>
+        const scheduleUrl = 'schedules.json'; // URL к JSON-файлу
+
+        // Функция для загрузки расписания из JSON
+        async function loadSchedules() {
+            const response = await fetch(scheduleUrl);
+            return await response.json();
+        }
+
+        let schedules = {};
+
+        // Загружаем расписания при инициализации
+        loadSchedules().then(data => {
+            schedules = data;
+        });
+
         function showSchedule(className) {
-            const schedule = localStorage.getItem(className);
-            document.getElementById('scheduleContent').innerText = schedule ? schedule : 'Расписание не найдено.';
+            const schedule = schedules[className] || 'Расписание не найдено.';
+            document.getElementById('scheduleContent').innerText = schedule;
             document.getElementById('myModal').style.display = "block";
         }
 
