@@ -1,7 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-image: url('https://avatars.mds.yandex.net/i?id=4b6d556efd1d4c66469fde73597be8c0_l-5268893-images-thumbs&n=13'); /* Укажите свой URL новогодней елки */
-    background-size: cover;
+    background-color: #f4f4f9;
     color: #333;
     margin: 0;
     padding: 20px;
@@ -10,18 +9,18 @@ body {
 header {
     text-align: center;
     margin-bottom: 20px;
-    color: #ffcc00; /* Золотисто-желтый цвет для новогоднего оформления */
 }
 
 h1 {
-    color: #ffcc00;
+    color: #4CAF50;
 }
 
 .form-button {
+    display: inline-block;
     margin-top: 10px;
     padding: 10px 15px;
     border: none;
-    background-color: #ff4700; /* Красный для кнопки */
+    background-color: #4CAF50;
     color: white;
     text-decoration: none;
     cursor: pointer;
@@ -88,7 +87,7 @@ form {
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8); /* Полупрозрачный белый для формы */
+    background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -106,7 +105,7 @@ input[type="password"], select, textarea {
 }
 
 button[type="submit"] {
-    background-color: #28a745; /* Зелёный для кнопки */
+    background-color: #28a745;
     color: white;
     padding: 10px;
     border: none;
