@@ -3,90 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Расписание</title>
+    <title>Школьное расписание</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Пример стилей для Windows 11 */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #F3F3F3;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-        }
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-control {
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-bottom: 5px;
-        }
-        select, button {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #CCCCCC;
-            background-color: #FFF;
-            font-size: 16px;
-        }
-        button {
-            background-color: #0078D4;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #005A9E;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #CCCCCC;
-        }
-        th {
-            background-color: #0078D4;
-            color: white;
-        }
-        tr:hover {
-            background-color: #E5E5E5;
-        }
-        .class-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .class-button {
-            margin: 5px;
-            padding: 10px 15px;
-            background-color: #0078D4;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .class-button:hover {
-            background-color: #005A9E;
-        }
-    </style>
 </head>
 <body>
     <header>
-        <h1>Расписание уроков</h1>
+        <h1>Школьное расписание</h1>
     </header>
 
     <main>
-        <div id="scheduleTableContainer" style="display:none;">
+        <div class="class-buttons">
+            <button class="class-button" onclick="loadSchedule('5а')">5а</button>
+            <button class="class-button" onclick="loadSchedule('5б')">5б</button>
+            <button class="class-button" onclick="loadSchedule('5в')">5в</button>
+            <button class="class-button" onclick="loadSchedule('5г')">5г</button>
+            <button class="class-button" onclick="loadSchedule('6а')">6а</button>
+            <button class="class-button" onclick="loadSchedule('6б')">6б</button>
+            <button class="class-button" onclick="loadSchedule('6в')">6в</button>
+            <button class="class-button" onclick="loadSchedule('6г')">6в</button>
+            <button class="class-button" onclick="loadSchedule('7а')">7а</button>
+            <button class="class-button" onclick="loadSchedule('7б')">7б</button>
+            <button class="class-button" onclick="loadSchedule('7в')">7а</button>
+            <button class="class-button" onclick="loadSchedule('7г')">7б</button>
+            <button class="class-button" onclick="loadSchedule('8а')">8а</button>
+            <button class="class-button" onclick="loadSchedule('8б')">8а</button>
+            <button class="class-button" onclick="loadSchedule('8в')">8а</button>
+            <button class="class-button" onclick="loadSchedule('9а')">9а</button>
+            <button class="class-button" onclick="loadSchedule('9б')">9а</button>
+            <button class="class-button" onclick="loadSchedule('9в')">9а</button>
+            <button class="class-button" onclick="loadSchedule('9г')">9а</button>
+            <button class="class-button" onclick="loadSchedule('9д')">9а</button>
+            <button class="class-button" onclick="loadSchedule('10ен')">10ен</button>
+            <button class="class-button" onclick="loadSchedule('10тех')">10ен</button>
+            <button class="class-button" onclick="loadSchedule('10б')">10ен</button>
+            <button class="class-button" onclick="loadSchedule('11ен')">11ен</button>
+            <button class="class-button" onclick="loadSchedule('10тех')">10ен</button>
+            <button class="class-button" onclick="loadSchedule('11б')">11ен</button>
+        </div>
+
+        <div class="schedule-container" id="scheduleTableContainer">
             <h2 id="classTitle"></h2>
             <table id="scheduleTable">
                 <thead>
@@ -113,12 +68,25 @@
                     <option value="6а">6а</option>
                     <option value="6б">6б</option>
                     <option value="6в">6в</option>
+                    <option value="6г">6г</option>
                     <option value="7а">7а</option>
                     <option value="7б">7б</option>
+                    <option value="7в">7в</option>
+                    <option value="7г">7г</option>
                     <option value="8а">8а</option>
+                    <option value="8б">8б</option>
+                    <option value="8в">8в</option>
                     <option value="9а">9а</option>
+                    <option value="9б">9б</option>
+                    <option value="9в">9в</option>
+                    <option value="9г">9г</option>
+                    <option value="9д">9д</option>
                     <option value="10ен">10ен</option>
+                    <option value="10тех">10тех</option>
+                    <option value="10б">10б</option>
                     <option value="11ен">11ен</option>
+                    <option value="11тех">11тех</option>
+                    <option value="11б">11б</option>
                 </select>
             </div>
 
@@ -159,22 +127,6 @@
 
             <button type="submit">Сохранить расписание</button>
         </form>
-
-        <div class="class-buttons">
-            <button class="class-button" onclick="loadSchedule('5а')">5а</button>
-            <button class="class-button" onclick="loadSchedule('5б')">5б</button>
-            <button class="class-button" onclick="loadSchedule('5в')">5в</button>
-            <button class="class-button" onclick="loadSchedule('5г')">5г</button>
-            <button class="class-button" onclick="loadSchedule('6а')">6а</button>
-            <button class="class-button" onclick="loadSchedule('6б')">6б</button>
-            <button class="class-button" onclick="loadSchedule('6в')">6в</button>
-            <button class="class-button" onclick="loadSchedule('7а')">7а</button>
-            <button class="class-button" onclick="loadSchedule('7б')">7б</button>
-            <button class="class-button" onclick="loadSchedule('8а')">8а</button>
-            <button class="class-button" onclick="loadSchedule('9а')">9а</button>
-            <button class="class-button" onclick="loadSchedule('10ен')">10ен</button>
-            <button class="class-button" onclick="loadSchedule('11ен')">11ен</button>
-        </div>
     </main>
 
     <script>
@@ -214,10 +166,10 @@
             }
 
             // Сохранение расписания
-            await fetch('https://api.github.com/gists/4b7c67ffb92982bfebd3511f702756e3', {
+            await fetch('https://api.github.com/gists/4b7c67ffb92982bfebd3511f702756e, {
                 method: 'PATCH',
                 headers: {
-                    'Authorization': 'token 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', // Убедитесь, что заменили на ваш токен
+                    'Authorization': 'token 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', // Замените на ваш токен
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -240,7 +192,7 @@
 
             schedule.forEach(entry => {
                 if (entry) {
-                    const [lessonNumber, subject, teacher] = entry.split(' ');
+                    const [lessonNumber, subject, teacher] = entry.split(', ');
                     const startTime = getLessonStartTime(lessonNumber);
                     const row = `<tr>
                         <td>${lessonNumber}</td>
@@ -258,13 +210,13 @@
 
         function getLessonStartTime(lessonNumber) {
             const lessonTimes = {
-                '1': '04:00',
-                '2': '04:50',
-                '3': '05:40',
-                '4': '06:40',
-                '5': '07:40',
-                '6': '08:30',
-                '7': '13:20'
+                '1': '08:00',  // +4 часа
+                '2': '08:50',
+                '3': '09:40',
+                '4': '10:40',
+                '5': '11:40',
+                '6': '12:30',
+                '7': '17:20'
             };
             return lessonTimes[lessonNumber] || 'Неизвестно';
         }
