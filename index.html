@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Школьное расписание</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
+    <script src="script.js" defer></script>  <!-- Подключаем скрипт -->
 </head>
 <body>
     <header>
@@ -13,7 +16,6 @@
 
     <main>
         <div class="class-buttons">
-            <!-- Все классы -->
             <button class="class-button" onclick="loadSchedule('5а')">5а</button>
             <button class="class-button" onclick="loadSchedule('5б')">5б</button>
             <button class="class-button" onclick="loadSchedule('5в')">5в</button>
@@ -131,120 +133,8 @@
                 </select>
             </div>
 
-            <button type="submit">Сохранить расписание как CSV</button>
+            <button type="submit">Сохранить расписание</button>
         </form>
     </main>
-
-    <script>
-        let passwordCorrect = false;
-
-        document.getElementById('passwordForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const password = document.getElementById('password').value;
-            if (password === "3_School_Achinsk") {
-                passwordCorrect = true;
-                document.getElementById('scheduleForm').style.display = 'block';
-                document.getElementById('passwordForm').style.display = 'none';
-            } else {
-                alert('Неверный пароль!');
-            }
-        });
-
-        let schedules = {};
-
-        async function loadSchedules() {
-            const response = await fetch('https://gist.githubusercontent.com/3-School-Achinsk/4b7c67ffb92982bfebd3511f702756e3/raw/79bf1323d0336531e9fc5cd7db016078da34b85a/schedules.json');
-            return await response.json();
-        }
-
-        loadSchedules().then(data => {
-            schedules = data;
-        });
-
-        document.getElementById('scheduleForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            if (!passwordCorrect) return; // Проверка пароля
-
-            const className = document.getElementById('className').value;
-            const subject = document.getElementById('subject').value;
-            const lessonNumber = document.getElementById('lessonNumber').value;
-            const teacher = document.getElementById('teacher').value;
-            const absence = document.getElementById('absence').value;
-
-            // Обновление расписания
-            if (absence === "окно") {
-                schedules[className] = schedules[className] || [];
-                schedules[className][lessonNumber - 1] = `${lessonNumber} Окно`;
-            } else {
-                const lessonEntry = `${lessonNumber} ${subject}, ${teacher}`;
-                schedules[className] = schedules[className] || [];
-                schedules[className][lessonNumber - 1] = lessonEntry;
-            }
-
-            // Генерация CSV
-            const csvContent = "data:text/csv;charset=utf-8," + generateCSV(schedules[className]);
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `${className}_schedule.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            alert('Расписание сохранено как CSV!');
-            document.getElementById('scheduleForm').reset();
-        });
-
-        function loadSchedule(className) {
-            const schedule = schedules[className];
-            const scheduleBody = document.getElementById('scheduleBody');
-            scheduleBody.innerHTML = ''; // Очищаем предыдущие данные
-
-            if (schedule) {
-                schedule.forEach(entry => {
-                    if (entry) {
-                        const [lessonNumber, subject, teacher] = entry.split(', ');
-                        const startTime = getLessonStartTime(lessonNumber);
-                        const row = `<tr>
-                            <td>${lessonNumber}</td>
-                            <td>${subject}</td>
-                            <td>${teacher}</td>
-                            <td>${startTime}</td>
-                        </tr>`;
-                        scheduleBody.insertAdjacentHTML('beforeend', row);
-                    }
-                });
-            }
-
-            document.getElementById('classTitle').innerText = `Расписание для класса ${className}`;
-            document.getElementById('scheduleTableContainer').style.display = 'block';
-        }
-
-        function getLessonStartTime(lessonNumber) {
-            const lessonTimes = {
-                '1': '08:00',  // +4 часа
-                '2': '08:50',
-                '3': '09:40',
-                '4': '10:40',
-                '5': '11:40',
-                '6': '12:30',
-                '7': '17:20'
-            };
-            return lessonTimes[lessonNumber] || 'Неизвестно';
-        }
-
-        function generateCSV(data) {
-            const csvRows = [];
-            csvRows.push(['№ Урока', 'Предмет', 'Учитель', 'Время начала']); // Заголовки
-            data.forEach(entry => {
-                if (entry) {
-                    const [lessonNumber, subject, teacher] = entry.split(', ');
-                    const startTime = getLessonStartTime(lessonNumber);
-                    csvRows.push([lessonNumber, subject, teacher, startTime]);
-                }
-            });
-            return csvRows.map(row => row.join(",")).join("\n");
-        }
-    </script>
 </body>
 </html>
