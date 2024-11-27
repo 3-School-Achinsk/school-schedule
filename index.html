@@ -13,6 +13,7 @@
 
     <main>
         <div class="class-buttons">
+            <!-- Все классы -->
             <button class="class-button" onclick="loadSchedule('5а')">5а</button>
             <button class="class-button" onclick="loadSchedule('5б')">5б</button>
             <button class="class-button" onclick="loadSchedule('5в')">5в</button>
@@ -23,25 +24,25 @@
             <button class="class-button" onclick="loadSchedule('6г')">6г</button>
             <button class="class-button" onclick="loadSchedule('7а')">7а</button>
             <button class="class-button" onclick="loadSchedule('7б')">7б</button>
-            <button class="class-button" onclick="loadSchedule('7в')">7а</button>
-            <button class="class-button" onclick="loadSchedule('7г')">7б</button>
+            <button class="class-button" onclick="loadSchedule('7в')">7в</button>
+            <button class="class-button" onclick="loadSchedule('7г')">7г</button>
             <button class="class-button" onclick="loadSchedule('8а')">8а</button>
-            <button class="class-button" onclick="loadSchedule('8б')">8а</button>
-            <button class="class-button" onclick="loadSchedule('8в')">8а</button>
+            <button class="class-button" onclick="loadSchedule('8б')">8б</button>
+            <button class="class-button" onclick="loadSchedule('8в')">8в</button>
             <button class="class-button" onclick="loadSchedule('9а')">9а</button>
-            <button class="class-button" onclick="loadSchedule('9б')">9а</button>
-            <button class="class-button" onclick="loadSchedule('9в')">9а</button>
-            <button class="class-button" onclick="loadSchedule('9г')">9а</button>
-            <button class="class-button" onclick="loadSchedule('9д')">9а</button>
+            <button class="class-button" onclick="loadSchedule('9б')">9б</button>
+            <button class="class-button" onclick="loadSchedule('9в')">9в</button>
+            <button class="class-button" onclick="loadSchedule('9г')">9г</button>
+            <button class="class-button" onclick="loadSchedule('9д')">9д</button>
             <button class="class-button" onclick="loadSchedule('10ен')">10ен</button>
-            <button class="class-button" onclick="loadSchedule('10тех')">10ен</button>
-            <button class="class-button" onclick="loadSchedule('10б')">10ен</button>
+            <button class="class-button" onclick="loadSchedule('10тех')">10тех</button>
+            <button class="class-button" onclick="loadSchedule('10б')">10б</button>
             <button class="class-button" onclick="loadSchedule('11ен')">11ен</button>
-            <button class="class-button" onclick="loadSchedule('10тех')">10ен</button>
-            <button class="class-button" onclick="loadSchedule('11б')">11ен</button>
+            <button class="class-button" onclick="loadSchedule('11тех')">11тех</button>
+            <button class="class-button" onclick="loadSchedule('11б')">11б</button>
         </div>
 
-        <div class="schedule-container" id="scheduleTableContainer">
+        <div class="schedule-container" id="scheduleTableContainer" style="display: none">
             <h2 id="classTitle"></h2>
             <table id="scheduleTable">
                 <thead>
@@ -56,8 +57,13 @@
             </table>
         </div>
 
-        <h2>Введите расписание</h2>
-        <form id="scheduleForm">
+        <h2>Введите расписание под паролем</h2>
+        <form id="passwordForm">
+            <input type="password" id="password" placeholder="Введите пароль" required>
+            <button type="submit">Подтвердить</button>
+        </form>
+
+        <form id="scheduleForm" style="display: none;">
             <div class="form-control">
                 <label for="className">Выберите класс:</label>
                 <select id="className">
@@ -125,16 +131,29 @@
                 </select>
             </div>
 
-            <button type="submit">Сохранить расписание</button>
+            <button type="submit">Сохранить расписание как CSV</button>
         </form>
     </main>
 
     <script>
-        const scheduleUrl = 'https://gist.githubusercontent.com/3-School-Achinsk/4b7c67ffb92982bfebd3511f702756e3/raw/79bf1323d0336531e9fc5cd7db016078da34b85a/schedules.json'; // Ваш Raw URL
+        let passwordCorrect = false;
+
+        document.getElementById('passwordForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const password = document.getElementById('password').value;
+            if (password === "3_School_Achinsk") {
+                passwordCorrect = true;
+                document.getElementById('scheduleForm').style.display = 'block';
+                document.getElementById('passwordForm').style.display = 'none';
+            } else {
+                alert('Неверный пароль!');
+            }
+        });
+
         let schedules = {};
 
         async function loadSchedules() {
-            const response = await fetch(scheduleUrl);
+            const response = await fetch('https://gist.githubusercontent.com/3-School-Achinsk/4b7c67ffb92982bfebd3511f702756e3/raw/79bf1323d0336531e9fc5cd7db016078da34b85a/schedules.json');
             return await response.json();
         }
 
@@ -142,8 +161,9 @@
             schedules = data;
         });
 
-        document.getElementById('scheduleForm').addEventListener('submit', async function(event) {
+        document.getElementById('scheduleForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            if (!passwordCorrect) return; // Проверка пароля
 
             const className = document.getElementById('className').value;
             const subject = document.getElementById('subject').value;
@@ -151,37 +171,27 @@
             const teacher = document.getElementById('teacher').value;
             const absence = document.getElementById('absence').value;
 
-            // Получение текущих данных
-            const response = await fetch(scheduleUrl);
-            const data = await response.json();
-
-            // Если урока нет, меняем на 'окно'
+            // Обновление расписания
             if (absence === "окно") {
-                data[className] = data[className] || [];
-                data[className][lessonNumber - 1] = `${lessonNumber} Окно`;
+                schedules[className] = schedules[className] || [];
+                schedules[className][lessonNumber - 1] = `${lessonNumber} Окно`;
             } else {
                 const lessonEntry = `${lessonNumber} ${subject}, ${teacher}`;
-                data[className] = data[className] || [];
-                data[className][lessonNumber - 1] = lessonEntry;
+                schedules[className] = schedules[className] || [];
+                schedules[className][lessonNumber - 1] = lessonEntry;
             }
 
-            // Сохранение расписания
-            await fetch('https://api.github.com/gists/4b7c67ffb92982bfebd3511f702756e, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': 'token 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', // Замените на ваш токен
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    files: {
-                        'schedules.json': {
-                            content: JSON.stringify(data, null, 2)
-                        }
-                    }
-                })
-            });
+            // Генерация CSV
+            const csvContent = "data:text/csv;charset=utf-8," + generateCSV(schedules[className]);
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `${className}_schedule.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
 
-            alert('Расписание сохранено!');
+            alert('Расписание сохранено как CSV!');
             document.getElementById('scheduleForm').reset();
         });
 
@@ -190,19 +200,21 @@
             const scheduleBody = document.getElementById('scheduleBody');
             scheduleBody.innerHTML = ''; // Очищаем предыдущие данные
 
-            schedule.forEach(entry => {
-                if (entry) {
-                    const [lessonNumber, subject, teacher] = entry.split(', ');
-                    const startTime = getLessonStartTime(lessonNumber);
-                    const row = `<tr>
-                        <td>${lessonNumber}</td>
-                        <td>${subject}</td>
-                        <td>${teacher}</td>
-                        <td>${startTime}</td>
-                    </tr>`;
-                    scheduleBody.insertAdjacentHTML('beforeend', row);
-                }
-            });
+            if (schedule) {
+                schedule.forEach(entry => {
+                    if (entry) {
+                        const [lessonNumber, subject, teacher] = entry.split(', ');
+                        const startTime = getLessonStartTime(lessonNumber);
+                        const row = `<tr>
+                            <td>${lessonNumber}</td>
+                            <td>${subject}</td>
+                            <td>${teacher}</td>
+                            <td>${startTime}</td>
+                        </tr>`;
+                        scheduleBody.insertAdjacentHTML('beforeend', row);
+                    }
+                });
+            }
 
             document.getElementById('classTitle').innerText = `Расписание для класса ${className}`;
             document.getElementById('scheduleTableContainer').style.display = 'block';
@@ -219,6 +231,19 @@
                 '7': '17:20'
             };
             return lessonTimes[lessonNumber] || 'Неизвестно';
+        }
+
+        function generateCSV(data) {
+            const csvRows = [];
+            csvRows.push(['№ Урока', 'Предмет', 'Учитель', 'Время начала']); // Заголовки
+            data.forEach(entry => {
+                if (entry) {
+                    const [lessonNumber, subject, teacher] = entry.split(', ');
+                    const startTime = getLessonStartTime(lessonNumber);
+                    csvRows.push([lessonNumber, subject, teacher, startTime]);
+                }
+            });
+            return csvRows.map(row => row.join(",")).join("\n");
         }
     </script>
 </body>
