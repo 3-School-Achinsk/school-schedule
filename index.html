@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Школьное расписание</title>
     <meta name="description" content="Просмотр школьного расписания для классов.">
-    <meta name="keywords" content="расписание, школа, классы, школа Ачинск, расписание уроков Ачинск">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -22,65 +21,91 @@
             <button class="class-button" onclick="showSchedule('6а')">6а</button>
             <button class="class-button" onclick="showSchedule('6б')">6б</button>
             <button class="class-button" onclick="showSchedule('6в')">6в</button>
-            <button class="class-button" onclick="showSchedule('6г')">6г</button>
             <button class="class-button" onclick="showSchedule('7а')">7а</button>
             <button class="class-button" onclick="showSchedule('7б')">7б</button>
             <button class="class-button" onclick="showSchedule('7в')">7в</button>
-            <button class="class-button" onclick="showSchedule('7г')">7г</button>
             <button class="class-button" onclick="showSchedule('8а')">8а</button>
-            <button class="class-button" onclick="showSchedule('8б')">8б</button>
-            <button class="class-button" onclick="showSchedule('8в')">8в</button>
             <button class="class-button" onclick="showSchedule('9а')">9а</button>
-            <button class="class-button" onclick="showSchedule('9б')">9б</button>
-            <button class="class-button" onclick="showSchedule('9в')">9в</button>
-            <button class="class-button" onclick="showSchedule('9г')">9г</button>
-            <button class="class-button" onclick="showSchedule('9д')">9д</button>
             <button class="class-button" onclick="showSchedule('10ен')">10ен</button>
-            <button class="class-button" onclick="showSchedule('10тех')">10тех</button>
-            <button class="class-button" onclick="showSchedule('10б')">10б</button>
             <button class="class-button" onclick="showSchedule('11ен')">11ен</button>
-            <button class="class-button" onclick="showSchedule('11тех')">11тех</button>
-            <button class="class-button" onclick="showSchedule('11б')">11б</button>
         </div>
 
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <div id="scheduleContent"></div>
-            </div>
-        </div>
-        
+        <div id="currentLesson"></div>
+
         <a href="form.html" class="form-button">Заполнить расписание</a>
     </main>
 
     <script>
         const scheduleUrl = 'https://gist.githubusercontent.com/3-School-Achinsk/4b7c67ffb92982bfebd3511f702756e3/raw/79bf1323d0336531e9fc5cd7db016078da34b85a/schedules.json'; // Ваш Raw URL
 
+        const lessonTimes = {
+            '1': { start: '04:00', end: '04:40' },
+            '2': { start: '04:50', end: '05:30' },
+            '3': { start: '05:40', end: '06:20' },
+            '4': { start: '06:40', end: '07:20' },
+            '5': { start: '07:40', end: '08:20' },
+            '6': { start: '08:30', end: '09:10' },
+            '7': { start: '13:20', end: '14:00' }
+        };
+
+        const breakTimes = {
+            '1': { start: '04:40', end: '04:50' },
+            '2': { start: '05:30', end: '05:40' },
+            '3': { start: '06:20', end: '06:40' },
+            '4': { start: '07:20', end: '07:40' },
+            '5': { start: '08:20', end: '08:30' },
+            '6': { start: '09:10', end: '09:20' }
+        };
+
+        let schedules = {};
+
         async function loadSchedules() {
             const response = await fetch(scheduleUrl);
             return await response.json();
         }
 
-        let schedules = {};
-
         loadSchedules().then(data => {
             schedules = data;
+            displayCurrentLesson();
         });
 
         function showSchedule(className) {
             const schedule = schedules[className] || 'Расписание не найдено.';
-            document.getElementById('scheduleContent').innerText = schedule;
-            document.getElementById('myModal').style.display = "block";
+            const lessonsArray = schedule.split(', ').map(lesson => {
+                const [number, subject] = lesson.split(' ');
+                return { number, subject };
+            });
+
+            // Сортировка по номеру урока
+            lessonsArray.sort((a, b) => a.number - b.number);
+
+            // Формирование строки для нового окна
+            const scheduleContent = lessonsArray.map(lesson => `${lesson.number} Урок: ${lesson.subject}`).join('\n');
+
+            const newWindow = window.open('', 'Расписание класса', 'width=300,height=400');
+            newWindow.document.write(`<pre>${scheduleContent}</pre>`);
+            newWindow.document.close();
         }
 
-        function closeModal() {
-            document.getElementById('myModal').style.display = "none";
-        }
+        function displayCurrentLesson() {
+            const now = new Date();
+            const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            let currentLesson = 'Сейчас нет уроков или перемен.';
 
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('myModal')) {
-                closeModal();
+            // Определение текущего урока или перемены
+            for (const [lessonNumber, times] of Object.entries(lessonTimes)) {
+                if (currentTime >= times.start && currentTime < times.end) {
+                    currentLesson = `Текущий урок: ${lessonNumber} `;
+                }
             }
+
+            for (const [breakNumber, times] of Object.entries(breakTimes)) {
+                if (currentTime >= times.start && currentTime < times.end) {
+                    currentLesson = `Перемена ${breakNumber} `;
+                }
+            }
+
+            document.getElementById('currentLesson').innerText = currentLesson;
         }
     </script>
 </body>
