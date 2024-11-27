@@ -1,25 +1,29 @@
+// Импортируйте необходимые модули из Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js";
+
 // Настройка Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyBjuG0mGQaki0eyAg2ayhLVPthP2kZ9RuE", // Укажите ваш API ключ
-    authDomain: "school-3-schedule.firebaseapp.com", // Укажите ваш проект
+    apiKey: "AIzaSyBjuG0mGQaki0eyAg2ayhLVPthP2kZ9RuE", // Ваш API ключ
+    authDomain: "school-3-schedule.firebaseapp.com", // Ваш домен
     databaseURL: "https://school-3-schedule-default-rtdb.firebaseio.com", // URL вашей базы данных
     projectId: "school-3-schedule", // Идентификатор проекта
-    storageBucket: "school-3-schedule.firebasestorage.app", // Хранилище проекта
+    storageBucket: "school-3-schedule.appspot.com", // Хранилище проекта
     messagingSenderId: "945821960363", // ID для отправки сообщений
     appId: "1:945821960363:web:b702c698622a539d4f0fee" // ID приложения
 };
 
 // Инициализация Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 let passwordCorrect = false;
 let schedules = {};
 
 // Функция загрузки расписания
 async function loadSchedules() {
-    const scheduleRef = database.ref('schedules');
-    scheduleRef.on('value', (snapshot) => {
+    const scheduleRef = ref(database, 'schedules');
+    onValue(scheduleRef, (snapshot) => {
         schedules = snapshot.val() || {};
     });
 }
@@ -27,19 +31,19 @@ async function loadSchedules() {
 loadSchedules(); // Загрузка расписания при инициализации
 
 document.getElementById('passwordForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const password = document.getElementById('password').value;
-    if (password === "3_School_Achinsk") {
-        passwordCorrect = true;
-        document.getElementById('scheduleForm').style.display = 'block';
-        document.getElementById('passwordForm').style.display = 'none';
+    event.preventDefault(); // Предотвращаем стандартное поведение формы
+    const password = document.getElementById('password').value; // Получаем ввод пароля
+    if (password === "3-School-Achinsk") { // Сравните с правильным паролем
+        passwordCorrect = true; // Устанавливаем флаг верного пароля
+        document.getElementById('scheduleForm').style.display = 'block'; // Показываем форму для расписания
+        document.getElementById('passwordForm').style.display = 'none'; // Скрываем форму пароля
     } else {
-        alert('Неверный пароль!');
+        alert('Неверный пароль!'); // Предупреждение о неверном пароле
     }
 });
 
 document.getElementById('scheduleForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    event.preventDefault(); // Предотвращаем стандартное поведение формы
     if (!passwordCorrect) return; // Проверка пароля
 
     const className = document.getElementById('className').value;
@@ -59,14 +63,15 @@ document.getElementById('scheduleForm').addEventListener('submit', function(even
     }
 
     // Сохранение расписания в Firebase
-    database.ref('schedules').set(schedules).then(() => {
+    set(ref(database, 'schedules'), schedules).then(() => {
         alert('Расписание успешно сохранено!');
-        document.getElementById('scheduleForm').reset();
+        document.getElementById('scheduleForm').reset(); // Сброс формы расписания
     }).catch(error => {
         alert('Ошибка при сохранении расписания: ' + error.message);
     });
 });
 
+// Функция для загрузки расписания класса
 function loadSchedule(className) {
     const schedule = schedules[className];
     const scheduleBody = document.getElementById('scheduleBody');
@@ -89,9 +94,10 @@ function loadSchedule(className) {
     }
 
     document.getElementById('classTitle').innerText = `Расписание для класса ${className}`;
-    document.getElementById('scheduleTableContainer').style.display = 'block';
+    document.getElementById('scheduleTableContainer').style.display = 'block'; // Показываем таблицу расписания
 }
 
+// Функция для получения времени начала урока
 function getLessonStartTime(lessonNumber) {
     const lessonTimes = {
         '1': '08:00',
