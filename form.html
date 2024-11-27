@@ -79,17 +79,17 @@
             const schedule = document.getElementById('schedule').value;
 
             // Получение текущих данных
-            const response = await fetch('https://gist.githubusercontent.com/3-School-Achinsk/36725d7bbd465aaeecb11ae5ec590f14/raw/a3f3c4f7c08c508c017583747280258ef2401dc3/schedules.json'); // Ваш Raw URL
+            const response = await fetch('https://gist.githubusercontent.com/3-School-Achinsk/4b7c67ffb92982bfebd3511f702756e3/raw/79bf1323d0336531e9fc5cd7db016078da34b85a/schedules.json'); // Ваш Raw URL
             const data = await response.json();
 
             // Обновление данных
             data[className] = schedule;
 
             // Сохранение обновлённого расписания
-            await fetch('https://api.github.com/gists/36725d7bbd465aaeecb11ae5ec590f14', { // Ваш ID Gist
+            await fetch('4b7c67ffb92982bfebd3511f702756e3', { // Ваш ID Gist
                 method: 'PATCH',
                 headers: {
-                    'Authorization': 'token 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', // Ваш токен доступа
+                    'Authorization': 'token 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', // Ваш токен доступа
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
