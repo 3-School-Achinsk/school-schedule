@@ -2,7 +2,8 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #F3F3F3; /* Светлый фон */
+    background-color: #1A1A1A; /* Темный фон */
+    color: #FFA500; /* Оранжевый текст */
 }
 
 header {
@@ -12,63 +13,7 @@ header {
 
 h1 {
     font-size: 2.5em;
-    color: #333;
-}
-
-.form-control {
-    margin-bottom: 15px;
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-select, input, button {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #CCCCCC;
-    background-color: #FFF;
-    font-size: 16px;
-}
-
-button {
-    background-color: #0078D4;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #005A9E; /* Затемнение при наведении */
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    border-radius: 8px;
-    overflow: hidden;
-    background-color: #FFF;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #CCCCCC;
-}
-
-th {
-    background-color: #0078D4;
-    color: white;
-}
-
-tr:hover {
-    background-color: #E5E5E5; /* Цвет строки при наведении */
+    color: #FFA500; /* Оранжевый */
 }
 
 .class-buttons {
@@ -81,7 +26,7 @@ tr:hover {
 .class-button {
     margin: 5px;
     padding: 10px 15px;
-    background-color: #0078D4;
+    background-color: #FF4500; /* Темно-оранжевый для кнопок */
     color: white;
     border: none;
     border-radius: 5px;
@@ -90,14 +35,34 @@ tr:hover {
 }
 
 .class-button:hover {
-    background-color: #005A9E; /* Затемнение при наведении */
+    background-color: #FF7F50; /* Светлее оранжевый при наведении */
 }
 
 .schedule-container {
-    border: 1px solid #CCCCCC;
+    border: 1px solid #FF4500; /* Темно-оранжевый для границы */
     border-radius: 8px;
     padding: 20px;
     margin-top: 20px;
-    background-color: #FFF;
-    display: none; /* Скрываем контейнер до выбора класса */
+    background-color: #2A2A2A; /* Темный фон для контейнера */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #FF4500; /* Темно-оранжевый */
+}
+
+th {
+    background-color: #FF4500; /* Темно-оранжевый заголовок */
+    color: white;
+}
+
+tr:hover {
+    background-color: rgba(255, 165, 0, 0.2); /* Светло-оранжевый при наведении на строку */
 }
