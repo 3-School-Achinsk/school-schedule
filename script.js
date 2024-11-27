@@ -34,9 +34,9 @@ document.getElementById('passwordForm').addEventListener('submit', function(even
     console.log("Введенный пароль:", password); // Отладочное сообщение 
     if (password === "3-School-Achinsk") { // Сравните с правильным паролем
         passwordCorrect = true; // Устанавливаем флаг верного пароля
+        console.log("Пароль правильный!"); // Отладочное сообщение
         document.getElementById('scheduleForm').style.display = 'block'; // Показываем форму для расписания
         document.getElementById('passwordForm').style.display = 'none'; // Скрываем форму пароля
-        console.log("Пароль правильный!"); // Отладочное сообщение
     } else {
         alert('Неверный пароль!'); // Предупреждение о неверном пароле
         console.log("Пароль неверный!"); // Отладочное сообщение
