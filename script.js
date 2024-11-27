@@ -1,143 +1,121 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Школьное расписание</title>
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Подключение Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.16.0/firebase-database.js"></script>
-    
-    <script src="script.js" defer></script>
-</head>
-<body>
-    <header>
-        <h1>Школьное расписание</h1>
-    </header>
+// Настройка Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBjuG0mGQaki0eyAg2ayhLVPthP2kZ9RuE", // Ваш API ключ
+    authDomain: "school-3-schedule.firebaseapp.com", // Ваш домен
+    databaseURL: "https://school-3-schedule-default-rtdb.firebaseio.com", // URL вашей базы данных
+    projectId: "school-3-schedule", // Идентификатор проекта
+    storageBucket: "school-3-schedule.appspot.com", // Хранилище проекта
+    messagingSenderId: "945821960363", // ID для отправки сообщений
+    appId: "1:945821960363:web:b702c698622a539d4f0fee" // ID приложения
+};
 
-    <main>
-        <div class="class-buttons">
-            <button class="class-button" onclick="loadSchedule('5а')">5а</button>
-            <button class="class-button" onclick="loadSchedule('5б')">5б</button>
-            <button class="class-button" onclick="loadSchedule('5в')">5в</button>
-            <button class="class-button" onclick="loadSchedule('5г')">5г</button>
-            <button class="class-button" onclick="loadSchedule('6а')">6а</button>
-            <button class="class-button" onclick="loadSchedule('6б')">6б</button>
-            <button class="class-button" onclick="loadSchedule('6в')">6в</button>
-            <button class="class-button" onclick="loadSchedule('6г')">6г</button>
-            <button class="class-button" onclick="loadSchedule('7а')">7а</button>
-            <button class="class-button" onclick="loadSchedule('7б')">7б</button>
-            <button class="class-button" onclick="loadSchedule('7в')">7в</button>
-            <button class="class-button" onclick="loadSchedule('7г')">7г</button>
-            <button class="class-button" onclick="loadSchedule('8а')">8а</button>
-            <button class="class-button" onclick="loadSchedule('8б')">8б</button>
-            <button class="class-button" onclick="loadSchedule('8в')">8в</button>
-            <button class="class-button" onclick="loadSchedule('9а')">9а</button>
-            <button class="class-button" onclick="loadSchedule('9б')">9б</button>
-            <button class="class-button" onclick="loadSchedule('9в')">9в</button>
-            <button class="class-button" onclick="loadSchedule('9г')">9г</button>
-            <button class="class-button" onclick="loadSchedule('9д')">9д</button>
-            <button class="class-button" onclick="loadSchedule('10ен')">10ен</button>
-            <button class="class-button" onclick="loadSchedule('10тех')">10тех</button>
-            <button class="class-button" onclick="loadSchedule('10б')">10б</button>
-            <button class="class-button" onclick="loadSchedule('11ен')">11ен</button>
-            <button class="class-button" onclick="loadSchedule('11тех')">11тех</button>
-            <button class="class-button" onclick="loadSchedule('11б')">11б</button>
-        </div>
+// Инициализация Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
-        <div class="schedule-container" id="scheduleTableContainer" style="display: none;">
-            <h2 id="classTitle"></h2>
-            <table id="scheduleTable">
-                <thead>
-                    <tr>
-                        <th>№ Урока</th>
-                        <th>Предмет</th>
-                        <th>Учитель</th>
-                        <th>Время начала</th>
-                    </tr>
-                </thead>
-                <tbody id="scheduleBody"></tbody>
-            </table>
-        </div>
+let passwordCorrect = false;
+let schedules = {};
 
-        <h2>Введите расписание под паролем</h2>
-        <form id="passwordForm">
-            <input type="password" id="password" placeholder="Введите пароль" required>
-            <button type="submit">Подтвердить</button>
-        </form>
+// Функция загрузки расписания
+async function loadSchedules() {
+    const scheduleRef = database.ref('schedules');
+    scheduleRef.on('value', (snapshot) => {
+        schedules = snapshot.val() || {};
+        console.log("Расписания загружены:", schedules); // Сообщение об успешной загрузке
+    });
+}
 
-        <form id="scheduleForm" style="display: none;">
-            <div class="form-control">
-                <label for="className">Выберите класс:</label>
-                <select id="className">
-                    <option value="5а">5а</option>
-                    <option value="5б">5б</option>
-                    <option value="5в">5в</option>
-                    <option value="5г">5г</option>
-                    <option value="6а">6а</option>
-                    <option value="6б">6б</option>
-                    <option value="6в">6в</option>
-                    <option value="6г">6г</option>
-                    <option value="7а">7а</option>
-                    <option value="7б">7б</option>
-                    <option value="7в">7в</option>
-                    <option value="7г">7г</option>
-                    <option value="8а">8а</option>
-                    <option value="8б">8б</option>
-                    <option value="8в">8в</option>
-                    <option value="9а">9а</option>
-                    <option value="9б">9б</option>
-                    <option value="9в">9в</option>
-                    <option value="9г">9г</option>
-                    <option value="9д">9д</option>
-                    <option value="10ен">10ен</option>
-                    <option value="10тех">10тех</option>
-                    <option value="10б">10б</option>
-                    <option value="11ен">11ен</option>
-                    <option value="11тех">11тех</option>
-                    <option value="11б">11б</option>
-                </select>
-            </div>
+// Загрузка расписания при инициализации
+loadSchedules();
 
-            <div class="form-control">
-                <label for="teacher">Выберите учителя:</label>
-                <select id="teacher">
-                    <option value="Иванова И.И.">Иванова И.И.</option>
-                    <option value="Петров П.П.">Петров П.П.</option>
-                    <option value="Сидорова С.С.">Сидорова С.С.</option>
-                </select>
-            </div>
+document.getElementById('passwordForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Предотвращаем стандартное поведение формы
+    const password = document.getElementById('password').value; // Получаем ввод пароля
+    console.log("Введенный пароль:", password); // Отладочное сообщение 
+    if (password === "3-School-Achinsk") { // Сравните с правильным паролем
+        passwordCorrect = true; // Устанавливаем флаг верного пароля
+        document.getElementById('scheduleForm').style.display = 'block'; // Показываем форму для расписания
+        document.getElementById('passwordForm').style.display = 'none'; // Скрываем форму пароля
+        console.log("Пароль правильный!"); // Отладочное сообщение
+    } else {
+        alert('Неверный пароль!'); // Предупреждение о неверном пароле
+        console.log("Пароль неверный!"); // Отладочное сообщение
+    }
+});
 
-            <div class="form-control">
-                <label for="lessonNumber">Выберите номер урока:</label>
-                <select id="lessonNumber">
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                </select>
-            </div>
+document.getElementById('scheduleForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Предотвращаем стандартное поведение формы
+    if (!passwordCorrect) return; // Проверка пароля
 
-            <div class="form-control">
-                <label for="subject">Введите предмет:</label>
-                <input type="text" id="subject" placeholder="Математика, Русский и т.д." required>
-            </div>
+    const className = document.getElementById('className').value;
+    const subject = document.getElementById('subject').value;
+    const lessonNumber = document.getElementById('lessonNumber').value;
+    const teacher = document.getElementById('teacher').value;
+    const absence = document.getElementById('absence').value;
 
-            <div class="form-control">
-                <label for="absence">Если урока нет, выберите:</label>
-                <select id="absence">
-                    <option value="">Урок присутствует</option>
-                    <option value="окно">Окно</option>
-                </select>
-            </div>
+    // Обновление расписания
+    if (absence === "окно") {
+        schedules[className] = schedules[className] || {};
+        schedules[className][lessonNumber - 1] = `${lessonNumber} Окно`;
+        console.log(`Добавлено окно в класс ${className}, урок номер: ${lessonNumber}`);
+    } else {
+        const lessonEntry = `${lessonNumber} ${subject}, ${teacher}`;
+        schedules[className] = schedules[className] || {};
+        schedules[className][lessonNumber - 1] = lessonEntry;
+        console.log(`Добавлено расписание: ${lessonEntry} для класса ${className}`);
+    }
 
-            <button type="submit">Сохранить расписание</button>
-        </form>
-    </main>
-</body>
-</html>
+    // Сохранение расписания в Firebase
+    database.ref('schedules').set(schedules).then(() => {
+        alert('Расписание успешно сохранено!');
+        document.getElementById('scheduleForm').reset(); // Сброс формы расписания
+    }).catch(error => {
+        alert('Ошибка при сохранении расписания: ' + error.message);
+        console.error("Ошибка при сохранении:", error); // Логируем ошибку
+    });
+});
+
+// Функция для загрузки расписания класса
+function loadSchedule(className) {
+    console.log("Загружается расписание для класса:", className); // Отладочное сообщение
+    const schedule = schedules[className];
+    const scheduleBody = document.getElementById('scheduleBody');
+    scheduleBody.innerHTML = ''; // Очищаем предыдущие данные
+    console.log("Полученные расписания:", schedules); // Отладочное сообщение
+
+    if (schedule) {
+        schedule.forEach((entry, i) => {
+            if (entry) {
+                const [lessonNumber, subject, teacher] = entry.split(', ');
+                const startTime = getLessonStartTime(lessonNumber);
+                const row = `<tr>
+                    <td>${lessonNumber}</td>
+                    <td>${subject}</td>
+                    <td>${teacher}</td>
+                    <td>${startTime}</td>
+                </tr>`;
+                scheduleBody.insertAdjacentHTML('beforeend', row);
+            }
+        });
+    } else {
+        console.log("Расписание для этого класса отсутствует."); // Отладочное сообщение
+        scheduleBody.innerHTML = '<tr><td colspan="4">Расписание отсутствует</td></tr>'; // Отображение сообщения об отсутствии расписания
+    }
+
+    document.getElementById('classTitle').innerText = `Расписание для класса ${className}`;
+    document.getElementById('scheduleTableContainer').style.display = 'block'; // Показываем таблицу расписания
+}
+
+// Функция для получения времени начала урока
+function getLessonStartTime(lessonNumber) {
+    const lessonTimes = {
+        '1': '08:00',
+        '2': '08:50',
+        '3': '09:40',
+        '4': '10:30',
+        '5': '11:20',
+        '6': '12:10',
+        '7': '13:00'
+    };
+    return lessonTimes[lessonNumber] || 'Неизвестно';
+}
