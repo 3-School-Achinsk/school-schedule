@@ -3,60 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Школьное расписание</title>
-    <meta name="description" content="Просмотр школьного расписания для классов.">
+    <title>Расписание</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Пример стилей для Windows 11 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F3F3F3;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-control {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        select, button {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #CCCCCC;
+            background-color: #FFF;
+            font-size: 16px;
+        }
+        button {
+            background-color: #0078D4;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #005A9E;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #CCCCCC;
+        }
+        th {
+            background-color: #0078D4;
+            color: white;
+        }
+        tr:hover {
+            background-color: #E5E5E5;
+        }
+        .class-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .class-button {
+            margin: 5px;
+            padding: 10px 15px;
+            background-color: #0078D4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .class-button:hover {
+            background-color: #005A9E;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>Школьное расписание</h1>
+        <h1>Расписание уроков</h1>
     </header>
 
     <main>
-        <div class="class-buttons">
-            <button class="class-button" onclick="showSchedule('5а')">5а</button>
-            <button class="class-button" onclick="showSchedule('5б')">5б</button>
-            <button class="class-button" onclick="showSchedule('5в')">5в</button>
-            <button class="class-button" onclick="showSchedule('5г')">5г</button>
-            <button class="class-button" onclick="showSchedule('6а')">6а</button>
-            <button class="class-button" onclick="showSchedule('6б')">6б</button>
-            <button class="class-button" onclick="showSchedule('6в')">6в</button>
-            <button class="class-button" onclick="showSchedule('7а')">7а</button>
-            <button class="class-button" onclick="showSchedule('7б')">7б</button>
-            <button class="class-button" onclick="showSchedule('7в')">7в</button>
-            <button class="class-button" onclick="showSchedule('8а')">8а</button>
-            <button class="class-button" onclick="showSchedule('9а')">9а</button>
-            <button class="class-button" onclick="showSchedule('10ен')">10ен</button>
-            <button class="class-button" onclick="showSchedule('11ен')">11ен</button>
+        <div id="scheduleTableContainer" style="display:none;">
+            <h2 id="classTitle"></h2>
+            <table id="scheduleTable">
+                <thead>
+                    <tr>
+                        <th>№ Урока</th>
+                        <th>Предмет</th>
+                        <th>Учитель</th>
+                        <th>Время начала</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody"></tbody>
+            </table>
         </div>
 
-        <div id="currentLesson"></div>
+        <h2>Введите расписание</h2>
+        <form id="scheduleForm">
+            <div class="form-control">
+                <label for="className">Выберите класс:</label>
+                <select id="className">
+                    <option value="5а">5а</option>
+                    <option value="5б">5б</option>
+                    <option value="5в">5в</option>
+                    <option value="5г">5г</option>
+                    <option value="6а">6а</option>
+                    <option value="6б">6б</option>
+                    <option value="6в">6в</option>
+                    <option value="7а">7а</option>
+                    <option value="7б">7б</option>
+                    <option value="8а">8а</option>
+                    <option value="9а">9а</option>
+                    <option value="10ен">10ен</option>
+                    <option value="11ен">11ен</option>
+                </select>
+            </div>
 
-        <a href="form.html" class="form-button">Заполнить расписание</a>
+            <div class="form-control">
+                <label for="teacher">Выберите учителя:</label>
+                <select id="teacher">
+                    <option value="Иванова И.И.">Иванова И.И.</option>
+                    <option value="Петров П.П.">Петров П.П.</option>
+                    <option value="Сидорова С.С.">Сидорова С.С.</option>
+                </select>
+            </div>
+
+            <div class="form-control">
+                <label for="lessonNumber">Выберите номер урока:</label>
+                <select id="lessonNumber">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select>
+            </div>
+
+            <div class="form-control">
+                <label for="subject">Введите предмет:</label>
+                <input type="text" id="subject" placeholder="Математика, Русский и т.д." required>
+            </div>
+
+            <div class="form-control">
+                <label for="absence">Если урока нет, выберите:</label>
+                <select id="absence">
+                    <option value="">Урок присутствует</option>
+                    <option value="окно">Окно</option>
+                </select>
+            </div>
+
+            <button type="submit">Сохранить расписание</button>
+        </form>
+
+        <div class="class-buttons">
+            <button class="class-button" onclick="loadSchedule('5а')">5а</button>
+            <button class="class-button" onclick="loadSchedule('5б')">5б</button>
+            <button class="class-button" onclick="loadSchedule('5в')">5в</button>
+            <button class="class-button" onclick="loadSchedule('5г')">5г</button>
+            <button class="class-button" onclick="loadSchedule('6а')">6а</button>
+            <button class="class-button" onclick="loadSchedule('6б')">6б</button>
+            <button class="class-button" onclick="loadSchedule('6в')">6в</button>
+            <button class="class-button" onclick="loadSchedule('7а')">7а</button>
+            <button class="class-button" onclick="loadSchedule('7б')">7б</button>
+            <button class="class-button" onclick="loadSchedule('8а')">8а</button>
+            <button class="class-button" onclick="loadSchedule('9а')">9а</button>
+            <button class="class-button" onclick="loadSchedule('10ен')">10ен</button>
+            <button class="class-button" onclick="loadSchedule('11ен')">11ен</button>
+        </div>
     </main>
 
     <script>
         const scheduleUrl = 'https://gist.githubusercontent.com/3-School-Achinsk/4b7c67ffb92982bfebd3511f702756e3/raw/79bf1323d0336531e9fc5cd7db016078da34b85a/schedules.json'; // Ваш Raw URL
-
-        const lessonTimes = {
-            '1': { start: '04:00', end: '04:40' },
-            '2': { start: '04:50', end: '05:30' },
-            '3': { start: '05:40', end: '06:20' },
-            '4': { start: '06:40', end: '07:20' },
-            '5': { start: '07:40', end: '08:20' },
-            '6': { start: '08:30', end: '09:10' },
-            '7': { start: '13:20', end: '14:00' }
-        };
-
-        const breakTimes = {
-            '1': { start: '04:40', end: '04:50' },
-            '2': { start: '05:30', end: '05:40' },
-            '3': { start: '06:20', end: '06:40' },
-            '4': { start: '07:20', end: '07:40' },
-            '5': { start: '08:20', end: '08:30' },
-            '6': { start: '09:10', end: '09:20' }
-        };
-
         let schedules = {};
 
         async function loadSchedules() {
@@ -66,46 +188,85 @@
 
         loadSchedules().then(data => {
             schedules = data;
-            displayCurrentLesson();
         });
 
-        function showSchedule(className) {
-            const schedule = schedules[className] || 'Расписание не найдено.';
-            const lessonsArray = schedule.split(', ').map(lesson => {
-                const [number, subject] = lesson.split(' ');
-                return { number, subject };
+        document.getElementById('scheduleForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const className = document.getElementById('className').value;
+            const subject = document.getElementById('subject').value;
+            const lessonNumber = document.getElementById('lessonNumber').value;
+            const teacher = document.getElementById('teacher').value;
+            const absence = document.getElementById('absence').value;
+
+            // Получение текущих данных
+            const response = await fetch(scheduleUrl);
+            const data = await response.json();
+
+            // Если урока нет, меняем на 'окно'
+            if (absence === "окно") {
+                data[className] = data[className] || [];
+                data[className][lessonNumber - 1] = `${lessonNumber} Окно`;
+            } else {
+                const lessonEntry = `${lessonNumber} ${subject}, ${teacher}`;
+                data[className] = data[className] || [];
+                data[className][lessonNumber - 1] = lessonEntry;
+            }
+
+            // Сохранение расписания
+            await fetch('https://api.github.com/gists/4b7c67ffb92982bfebd3511f702756e3', {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'token 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', // Убедитесь, что заменили на ваш токен
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    files: {
+                        'schedules.json': {
+                            content: JSON.stringify(data, null, 2)
+                        }
+                    }
+                })
             });
 
-            // Сортировка по номеру урока
-            lessonsArray.sort((a, b) => a.number - b.number);
+            alert('Расписание сохранено!');
+            document.getElementById('scheduleForm').reset();
+        });
 
-            // Формирование строки для нового окна
-            const scheduleContent = lessonsArray.map(lesson => `${lesson.number} Урок: ${lesson.subject}`).join('\n');
+        function loadSchedule(className) {
+            const schedule = schedules[className];
+            const scheduleBody = document.getElementById('scheduleBody');
+            scheduleBody.innerHTML = ''; // Очищаем предыдущие данные
 
-            const newWindow = window.open('', 'Расписание класса', 'width=300,height=400');
-            newWindow.document.write(`<pre>${scheduleContent}</pre>`);
-            newWindow.document.close();
+            schedule.forEach(entry => {
+                if (entry) {
+                    const [lessonNumber, subject, teacher] = entry.split(' ');
+                    const startTime = getLessonStartTime(lessonNumber);
+                    const row = `<tr>
+                        <td>${lessonNumber}</td>
+                        <td>${subject}</td>
+                        <td>${teacher}</td>
+                        <td>${startTime}</td>
+                    </tr>`;
+                    scheduleBody.insertAdjacentHTML('beforeend', row);
+                }
+            });
+
+            document.getElementById('classTitle').innerText = `Расписание для класса ${className}`;
+            document.getElementById('scheduleTableContainer').style.display = 'block';
         }
 
-        function displayCurrentLesson() {
-            const now = new Date();
-            const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-            let currentLesson = 'Сейчас нет уроков или перемен.';
-
-            // Определение текущего урока или перемены
-            for (const [lessonNumber, times] of Object.entries(lessonTimes)) {
-                if (currentTime >= times.start && currentTime < times.end) {
-                    currentLesson = `Текущий урок: ${lessonNumber} `;
-                }
-            }
-
-            for (const [breakNumber, times] of Object.entries(breakTimes)) {
-                if (currentTime >= times.start && currentTime < times.end) {
-                    currentLesson = `Перемена ${breakNumber} `;
-                }
-            }
-
-            document.getElementById('currentLesson').innerText = currentLesson;
+        function getLessonStartTime(lessonNumber) {
+            const lessonTimes = {
+                '1': '04:00',
+                '2': '04:50',
+                '3': '05:40',
+                '4': '06:40',
+                '5': '07:40',
+                '6': '08:30',
+                '7': '13:20'
+            };
+            return lessonTimes[lessonNumber] || 'Неизвестно';
         }
     </script>
 </body>
