@@ -28,17 +28,21 @@ async function loadSchedules() {
     });
 }
 
-loadSchedules(); // Загрузка расписания при инициализации
+// Загрузка расписания при инициализации
+loadSchedules(); 
 
 document.getElementById('passwordForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Предотвращаем стандартное поведение формы
     const password = document.getElementById('password').value; // Получаем ввод пароля
+    console.log("Введенный пароль:", password); // Отладочное сообщение 
     if (password === "3-School-Achinsk") { // Сравните с правильным паролем
         passwordCorrect = true; // Устанавливаем флаг верного пароля
         document.getElementById('scheduleForm').style.display = 'block'; // Показываем форму для расписания
         document.getElementById('passwordForm').style.display = 'none'; // Скрываем форму пароля
+        console.log("Пароль правильный!"); // Отладочное сообщение
     } else {
         alert('Неверный пароль!'); // Предупреждение о неверном пароле
+        console.log("Пароль неверный!"); // Отладочное сообщение
     }
 });
 
@@ -110,3 +114,4 @@ function getLessonStartTime(lessonNumber) {
     };
     return lessonTimes[lessonNumber] || 'Неизвестно';
 }
+
