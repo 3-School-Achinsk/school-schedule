@@ -1,68 +1,108 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 20px;
-    background-color: #1A1A1A; /* Темный фон */
-    color: #FFA500; /* Оранжевый текст */
+// Настройка Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBjuG0mGQaki0eyAg2ayhLVPthP2kZ9RuE", // Ваш API ключ
+    authDomain: "school-3-schedule.firebaseapp.com", // Ваш домен
+    databaseURL: "https://school-3-schedule-default-rtdb.firebaseio.com", // URL вашей базы данных
+    projectId: "school-3-schedule", // Идентификатор проекта
+    storageBucket: "school-3-schedule.appspot.com", // Хранилище проекта
+    messagingSenderId: "945821960363", // ID для отправки сообщений
+    appId: "1:945821960363:web:b702c698622a539d4f0fee" // ID приложения
+};
+
+// Инициализация Firebase
+const app = firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+let passwordCorrect = false;
+let schedules = {};
+
+// Функция загрузки расписания
+async function loadSchedules() {
+    const scheduleRef = database.ref('schedules');
+    scheduleRef.on('value', (snapshot) => {
+        schedules = snapshot.val() || {};
+    });
 }
 
-header {
-    text-align: center;
-    margin-bottom: 20px;
+loadSchedules(); // Загрузка расписания при инициализации
+
+document.getElementById('passwordForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Предотвращаем стандартное поведение формы
+    const password = document.getElementById('password').value; // Получаем ввод пароля
+    if (password === "3_School_Achinsk") { // Сравните с правильным паролем
+        passwordCorrect = true; // Устанавливаем флаг верного пароля
+        document.getElementById('scheduleForm').style.display = 'block'; // Показываем форму для расписания
+        document.getElementById('passwordForm').style.display = 'none'; // Скрываем форму пароля
+    } else {
+        alert('Неверный пароль!'); // Предупреждение о неверном пароле
+    }
+});
+
+document.getElementById('scheduleForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Предотвращаем стандартное поведение формы
+    if (!passwordCorrect) return; // Проверка пароля
+
+    const className = document.getElementById('className').value;
+    const subject = document.getElementById('subject').value;
+    const lessonNumber = document.getElementById('lessonNumber').value;
+    const teacher = document.getElementById('teacher').value;
+    const absence = document.getElementById('absence').value;
+
+    // Обновление расписания
+    if (absence === "окно") {
+        schedules[className] = schedules[className] || {};
+        schedules[className][lessonNumber - 1] = `${lessonNumber} Окно`;
+    } else {
+        const lessonEntry = `${lessonNumber} ${subject}, ${teacher}`;
+        schedules[className] = schedules[className] || {};
+        schedules[className][lessonNumber - 1] = lessonEntry;
+    }
+
+    // Сохранение расписания в Firebase
+    database.ref('schedules').set(schedules).then(() => {
+        alert('Расписание успешно сохранено!');
+        document.getElementById('scheduleForm').reset(); // Сброс формы расписания
+    }).catch(error => {
+        alert('Ошибка при сохранении расписания: ' + error.message);
+    });
+});
+
+// Функция для загрузки расписания класса
+function loadSchedule(className) {
+    const schedule = schedules[className];
+    const scheduleBody = document.getElementById('scheduleBody');
+    scheduleBody.innerHTML = ''; // Очищаем предыдущие данные
+
+    if (schedule) {
+        schedule.forEach((entry, i) => {
+            if (entry) {
+                const [lessonNumber, subject, teacher] = entry.split(', ');
+                const startTime = getLessonStartTime(lessonNumber);
+                const row = `<tr>
+                    <td>${lessonNumber}</td>
+                    <td>${subject}</td>
+                    <td>${teacher}</td>
+                    <td>${startTime}</td>
+                </tr>`;
+                scheduleBody.insertAdjacentHTML('beforeend', row);
+            }
+        });
+    }
+
+    document.getElementById('classTitle').innerText = `Расписание для класса ${className}`;
+    document.getElementById('scheduleTableContainer').style.display = 'block'; // Показываем таблицу расписания
 }
 
-h1 {
-    font-size: 2.5em;
-    color: #FFA500; /* Оранжевый */
-}
-
-.class-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.class-button {
-    margin: 5px;
-    padding: 10px 15px;
-    background-color: #FF4500; /* Темно-оранжевый для кнопок */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.class-button:hover {
-    background-color: #FF7F50; /* Светлее оранжевый при наведении */
-}
-
-.schedule-container {
-    border: 1px solid #FF4500; /* Темно-оранжевый для границы */
-    border-radius: 8px;
-    padding: 20px;
-    margin-top: 20px;
-    background-color: #2A2A2A; /* Темный фон для контейнера */
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #FF4500; /* Темно-оранжевый */
-}
-
-th {
-    background-color: #FF4500; /* Темно-оранжевый заголовок */
-    color: white;
-}
-
-tr:hover {
-    background-color: rgba(255, 165, 0, 0.2); /* Светло-оранжевый при наведении на строку */
+// Функция для получения времени начала урока
+function getLessonStartTime(lessonNumber) {
+    const lessonTimes = {
+        '1': '08:00',
+        '2': '08:50',
+        '3': '09:40',
+        '4': '10:30',
+        '5': '11:20',
+        '6': '12:10',
+        '7': '13:00'
+    };
+    return lessonTimes[lessonNumber] || 'Неизвестно';
 }
