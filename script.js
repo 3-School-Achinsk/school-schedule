@@ -57,12 +57,10 @@ document.getElementById('scheduleForm').addEventListener('submit', function(even
     if (absence === "окно") {
         schedules[className] = schedules[className] || {};
         schedules[className][lessonNumber - 1] = `${lessonNumber} Окно`;
-        console.log(`Добавлено окно в класс ${className}, урок номер: ${lessonNumber}`);
     } else {
         const lessonEntry = `${lessonNumber} ${subject}, ${teacher}`;
         schedules[className] = schedules[className] || {};
         schedules[className][lessonNumber - 1] = lessonEntry;
-        console.log(`Добавлено расписание: ${lessonEntry} для класса ${className}`);
     }
 
     // Сохранение расписания в Firebase
@@ -75,13 +73,10 @@ document.getElementById('scheduleForm').addEventListener('submit', function(even
     });
 });
 
-// Функция для загрузки расписания класса
 function loadSchedule(className) {
-    console.log("Загружается расписание для класса:", className); // Отладочное сообщение
     const schedule = schedules[className];
     const scheduleBody = document.getElementById('scheduleBody');
     scheduleBody.innerHTML = ''; // Очищаем предыдущие данные
-    console.log("Полученные расписания:", schedules); // Отладочное сообщение
 
     if (schedule) {
         schedule.forEach((entry, i) => {
@@ -98,7 +93,6 @@ function loadSchedule(className) {
             }
         });
     } else {
-        console.log("Расписание для этого класса отсутствует."); // Отладочное сообщение
         scheduleBody.innerHTML = '<tr><td colspan="4">Расписание отсутствует</td></tr>'; // Отображение сообщения об отсутствии расписания
     }
 
